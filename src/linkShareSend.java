@@ -12,46 +12,37 @@ public class linkShareSend{
     public static void main(String[] args){
         createFrame();
     }
-    public void setPeerWriter(PrintWriter pw){
-        peerWriter = pw;
-    }
-    public String getIP(){
-        return peerIP;
-    }
     static void setIP(String ip){
         peerIP = ip;
-    }
-    public int getMyPort(){
-        return myPort;
     }
     static void setPort(int port){
         myPort = port;
     }
     static void connectPeer(String ip, int port){
-        System.out.println("ran");
+        //System.out.println("ran");
         try{
             Socket soc = new Socket(ip, port);
             PrintWriter pw = new PrintWriter(soc.getOutputStream(), true);
-            peerWriter = pw;//setPeerWriter(pw);
+            peerWriter = pw;
         }catch(Exception e){
             System.out.println(e);
         }
     }
     static void sendMessage(String message){
-        peerWriter.println(message);//getPeerWriter().println(message);
+        peerWriter.println(message);
     }
     static void createFrame(){
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setTitle("LinkShareSend");
 
-        JPanel topPanel = new JPanel(new GridLayout(3,2,10,0));//3,3,10,0
-        JPanel midPanel = new JPanel(new GridLayout(1,1));//3,3
-        JPanel botPanel = new JPanel(new GridLayout(1,1));//had no layout
+        JPanel topPanel = new JPanel(new GridLayout(3,2,10,0));
+        JPanel midPanel = new JPanel(new GridLayout(1,1));
+        JPanel botPanel = new JPanel(new GridLayout(1,1));
         JButton sendButton = new JButton("Send");
         JButton connectButton = new JButton("Connect");
 
-        topPanel.add(new JLabel("Peer IP:"));
+        topPanel.add(new JLabel("Peer IPv4:"));
         JTextField ipTextField = new JTextField("xxx.xxx.xx.xx",10);
         topPanel.add(ipTextField);
         topPanel.add(new JLabel("Port:"));
@@ -71,11 +62,16 @@ public class linkShareSend{
             public void actionPerformed(ActionEvent e){
                 setIP(ipTextField.getText());
                 setPort(Integer.parseInt(portTextField.getText()));
-                if(!peerIP.isEmpty()){//!getPeerIP().isEmpty()
-                    System.out.println("connecting...");
-                    connectPeer(peerIP, myPort);//connectPeer(getPeerIP(),getMyPort());
+                if(!peerIP.isEmpty()){
+                    //System.out.println("connecting...");
+                    try{
+                        connectPeer(peerIP, myPort);
+                    }catch(Exception err){
+                        //System.out.println("failed to connect");
+                        System.out.println(err);
+                    }
                 }else{
-                    System.out.println("failed to connect");
+                    //System.out.println("no ip entered");
                 }
             }
         });
