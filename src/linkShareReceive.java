@@ -12,7 +12,6 @@ public class linkShareReceive{
     static int port = 7777;
     static myFrame frame;
     static Thread thread;
-    //static ServerSocket ss;
     public static void main(String[] args){
         frame = new myFrame();
         frame.createFrame();
@@ -25,9 +24,6 @@ public class linkShareReceive{
     }
     static myFrame getFrame(){
         return frame;
-    }
-    void setPort(int myPort){
-        port = myPort;
     }
     static class ServerTask implements Runnable{
         int port;
@@ -99,7 +95,7 @@ public class linkShareReceive{
             frame = new JFrame();
             topPanel = new JPanel(new GridLayout(2,1,10,0));
             botPanel = new JPanel(new GridLayout(1,1));
-            textArea = new JTextArea();//"Receive Text",8,50
+            textArea = new JTextArea();
             scrollPane = new JScrollPane(textArea);
             JButton setPortButton = new JButton("Set Port");
 
@@ -113,23 +109,19 @@ public class linkShareReceive{
             setPortButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    System.out.println("ran");
-                    port = Integer.parseInt(portTextField.getText());//setPort(stufff)
+                    //System.out.println("ran");
+                    port = Integer.parseInt(portTextField.getText());
                     //if thread previously started, halt it, and start new one
 
                     if(getThread()==null){//thread.isAlive()==true
-                        System.out.println("port started");
-                        //port = Integer.parseInt(portTextField.getText());
-                        thread = new Thread(new ServerTask(getPort(),getFrame()));
-                        thread.start();
+                        //System.out.println("port started");
                     }else{
-                        System.out.println("restarting...");
+                        //System.out.println("restarting...");
                         thread.interrupt();
-                        //port = Integer.parseInt(portTextField.getText());
-                        thread = new Thread(new ServerTask(getPort(),getFrame()));
-                        thread.start();
                     }
-                    System.out.println(getPort());
+                    thread = new Thread(new ServerTask(getPort(),getFrame()));
+                    thread.start();
+                    //System.out.println(getPort());
                 }
             });
             topPanel.add(setPortButton);
@@ -151,7 +143,7 @@ public class linkShareReceive{
             frame.setVisible(true);
         }
         public void updateFrame(String message){
-            textArea.append("\n" + message);
+            textArea.append(message + "\n");
         }
     }
 }
