@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -12,6 +14,7 @@ public class linkShareReceive{
     static int port = 7777;
     static myFrame frame;
     static Thread thread;
+    static String message = "";
     public static void main(String[] args){
         frame = new myFrame();
         frame.createFrame();
@@ -35,9 +38,9 @@ public class linkShareReceive{
         @Override
         public void run(){
             ServerSocket ss = null;
-            try {
+            try{
                 ss = new ServerSocket(port);
-            } catch (IOException e) {
+            }catch(IOException e){
                 throw new RuntimeException(e);
             }
             try{//ServerSocket ss = new ServerSocket(port)
@@ -47,12 +50,12 @@ public class linkShareReceive{
                     BufferedReader br = new BufferedReader(isr);
                     new Thread(new ClientHandler(soc, br, frame)).start();
                 }
-            }catch (Exception e){
+            }catch(Exception e){
                 System.out.println(e);
-            }finally {
-                try {
+            }finally{
+                try{
                     ss.close();
-                } catch (IOException e) {
+                }catch(IOException e){
                     throw new RuntimeException(e);
                 }
             }
@@ -70,7 +73,7 @@ public class linkShareReceive{
         @Override
         public void run(){
             try{
-                String message;
+                //String message;
                 while((message = br.readLine()) != null){
                     frame.updateFrame(message);
                 }
@@ -98,6 +101,7 @@ public class linkShareReceive{
             textArea = new JTextArea();
             scrollPane = new JScrollPane(textArea);
             JButton setPortButton = new JButton("Set Port");
+            JButton copyButton = new JButton("Copy");
 
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setTitle("LinkShareReceive");
@@ -125,6 +129,16 @@ public class linkShareReceive{
                 }
             });
             topPanel.add(setPortButton);
+
+            copyButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    StringSelection stringSelection = new StringSelection(message);
+                    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                    clipboard.setContents(stringSelection, null);
+                }
+            });
+            topPanel.add(copyButton);
 
             textArea.setLineWrap(true);
             textArea.setWrapStyleWord(true);
